@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="darkCoptan">#101221</color>
+    <color name="Coptan">#1C3B4D</color>
+    <color name="secondColor">#D25100</color>
+    <color name="colorPrimaryVariant">#1C3B4D</color>
+</resources>
