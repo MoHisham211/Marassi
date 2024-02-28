@@ -2,6 +2,8 @@ package mo.zain.marassi.viewModel
 
 import androidx.lifecycle.ViewModel
 import mo.zain.marassi.di.RetrofitClient
+import mo.zain.marassi.model.ForgetPasswordRequest
+import mo.zain.marassi.model.ForgetPasswordResponse
 import mo.zain.marassi.model.LoginData
 import mo.zain.marassi.model.LoginResponse
 import retrofit2.Call
@@ -25,6 +27,27 @@ class LoginViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                onResult(false, null, "Error: ${t.message}")
+            }
+        })
+    }
+
+    fun forgetPassword(forgetPasswordRequest: ForgetPasswordRequest, onResult: (Boolean, ForgetPasswordResponse?, String) -> Unit) {
+        RetrofitClient.apiService.resetPassword(forgetPasswordRequest).enqueue(object : Callback<ForgetPasswordResponse> {
+            override fun onResponse(call: Call<ForgetPasswordResponse>, response: Response<ForgetPasswordResponse>) {
+                if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    if (loginResponse != null && loginResponse.success) {
+                        onResult(true, loginResponse, "Login successful")
+                    } else {
+                        onResult(false, null, "Login failed")
+                    }
+                } else {
+                    onResult(false, null, "Error: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ForgetPasswordResponse>, t: Throwable) {
                 onResult(false, null, "Error: ${t.message}")
             }
         })

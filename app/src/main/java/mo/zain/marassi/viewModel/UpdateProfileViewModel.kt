@@ -49,6 +49,78 @@ class UpdateProfileViewModel :ViewModel(){
         })
     }
 
+
+    fun updateProfileImage(
+        token: String,
+        photo: MultipartBody.Part,
+        onResult: (Boolean, UpdateUserInfoResponse?, String) -> Unit
+    ) {
+        val authorizationHeader = "Token $token"
+
+        RetrofitClient.apiService.updateProfileImage(
+            authorizationHeader,
+            photo).enqueue(object : Callback<UpdateUserInfoResponse> {
+            override fun onResponse(
+                call: Call<UpdateUserInfoResponse>,
+                response: Response<UpdateUserInfoResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val updateUserInfo = response.body()
+                    if (updateUserInfo != null && updateUserInfo.success) {
+                        onResult(true, updateUserInfo, "Update successful")
+                    } else {
+                        onResult(false, null, "Update failed")
+                    }
+                } else {
+                    val errorMessage = "Error:------ ${response.code()} ${response.message()}"
+                    onResult(false, null, errorMessage)
+                }
+            }
+
+            override fun onFailure(call: Call<UpdateUserInfoResponse>, t: Throwable) {
+                val errorMessage = "Error:----- ${t.message}"
+                onResult(false, null, errorMessage)
+            }
+        })
+    }
+
+
+    fun updateProfileCard(
+        token: String,
+        IDCard: MultipartBody.Part,
+        onResult: (Boolean, UpdateUserInfoResponse?, String) -> Unit
+    ) {
+        val authorizationHeader = "Token $token"
+
+        RetrofitClient.apiService.updateProfileCard(
+            authorizationHeader,
+            IDCard).enqueue(object : Callback<UpdateUserInfoResponse> {
+            override fun onResponse(
+                call: Call<UpdateUserInfoResponse>,
+                response: Response<UpdateUserInfoResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val updateUserInfo = response.body()
+                    if (updateUserInfo != null && updateUserInfo.success) {
+                        onResult(true, updateUserInfo, "Update successful")
+                    } else {
+                        onResult(false, null, "Update failed")
+                    }
+                } else {
+                    val errorMessage = "Error:------ ${response.code()} ${response.message()}"
+                    onResult(false, null, errorMessage)
+                }
+            }
+
+            override fun onFailure(call: Call<UpdateUserInfoResponse>, t: Throwable) {
+                val errorMessage = "Error:----- ${t.message}"
+                onResult(false, null, errorMessage)
+            }
+        })
+    }
+
+
+
     fun updateProfileInfo(token:String,userData: UserData, onResult: (Boolean, UpdateUserInfoResponse?, String) -> Unit) {
         RetrofitClient.apiService.updateProfileInfo("Token "+token,userData).enqueue(object :
             Callback<UpdateUserInfoResponse> {

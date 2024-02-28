@@ -7,6 +7,8 @@ data class UserData(
     @SerializedName("phone") val phone: String,
     @SerializedName("token") val token: String,
     @SerializedName("fullname") val fullname: String
+
+
 )
 
 data class RegistrationResponse(

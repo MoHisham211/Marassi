@@ -75,6 +75,7 @@ class ProfileFragment : Fragment() {
         fullName = view.findViewById(R.id.fullName)
         userEmail = view.findViewById(R.id.email)
         phoneNum = view.findViewById(R.id.phoneNum)
+
         btnEdit = view.findViewById(R.id.editBtn)
         floatingActionLogout = view.findViewById(R.id.floatingActionLogout)
         camera_icon = view.findViewById(R.id.camera_icon)
@@ -87,8 +88,7 @@ class ProfileFragment : Fragment() {
         val userData: UserData? = SharedPreferencesHelper.getUserData(requireContext())
 
         if (userData != null) {
-
-            fullName.setText(userData!!.fullname)
+            fullName.setText(userData.fullname)
             userEmail.setText(userData.email)
             phoneNum.setText(userData.phone)
         } else {
@@ -102,16 +102,14 @@ class ProfileFragment : Fragment() {
 
         btnEdit.setOnClickListener {
 
-//            updateData(
-//                token!!, UserData(
-//                    userData!!.username, "", userEmail.text.toString(), phoneNum.text.toString(),
-//                    "", fullName.text.toString()
-//                )
-//            )
             Toast.makeText(requireContext(), "${token!!}", Toast.LENGTH_SHORT).show()
-            //if(ProfilePhotoAfterBitMapp==null || CardIdPhotoAfterBitMapp==null){
-                updateUserInfo(token!!,ProfilePhotoAfterBitMapp!!,CardIdPhotoAfterBitMapp!!)
-            //}
+            if(ProfilePhotoAfterBitMapp!=null && CardIdPhotoAfterBitMapp!=null){
+            updateUserPoth(token!!,ProfilePhotoAfterBitMapp!!,CardIdPhotoAfterBitMapp!!)
+            }else if(ProfilePhotoAfterBitMapp!=null&&CardIdPhotoAfterBitMapp==null){
+                updateProfileImage(token!!,ProfilePhotoAfterBitMapp!!)
+            }else if (ProfilePhotoAfterBitMapp==null&&CardIdPhotoAfterBitMapp!=null){
+                updateProfileCard(token!!,CardIdPhotoAfterBitMapp!!)
+            }
 
         }
 
@@ -120,8 +118,10 @@ class ProfileFragment : Fragment() {
         }
 
         iconImageView.setOnClickListener {
-            //updateUserInfo(token!!,bitmap)
-            updateUserText(token!!,UserData("","",userEmail.text.toString(),phoneNum.text.toString(),"",fullName.text.toString()))
+            updateUserText(token!!,UserData(userData!!.username
+                ,"",userEmail.text.toString()
+                ,phoneNum.text.toString(),"",
+                fullName.text.toString()))
         }
 
 
@@ -130,6 +130,52 @@ class ProfileFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun updateProfileCard(token: String, card: File) {
+
+        progressBar.visibility=View.VISIBLE
+
+        updateProfileViewModel = ViewModelProvider(this).get(UpdateProfileViewModel::class.java)
+
+
+        val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
+        val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
+
+
+        updateProfileViewModel.updateProfileCard(token
+            ,IDCard) { isSuccess, registrationResponse, message ->
+            if (isSuccess) {
+                // Registration successful, handle accordingly
+                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+            } else {
+                Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+            }
+        }
+    }
+
+    private fun updateProfileImage(token: String, photo: File) {
+
+        progressBar.visibility=View.VISIBLE
+
+        updateProfileViewModel = ViewModelProvider(this).get(UpdateProfileViewModel::class.java)
+
+        val requestFile = photo.asRequestBody("image/png".toMediaTypeOrNull())
+        val photoPart = MultipartBody.Part.createFormData("photo", photo.name, requestFile)
+
+        updateProfileViewModel.updateProfileImage(token
+            ,photoPart) { isSuccess, registrationResponse, message ->
+            if (isSuccess) {
+                // Registration successful, handle accordingly
+                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+            } else {
+                Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+            }
+        }
     }
 
 
@@ -218,51 +264,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-//    private fun chooseImage(imageId:Int) {
-//        if (ContextCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.READ_EXTERNAL_STORAGE
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            ActivityCompat.requestPermissions(
-//                requireActivity(),
-//                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-//                PICK_IMAGE_REQUEST
-//            )
-//        } else {
-//            val intent = Intent()
-//            intent.type = "image/*"
-//            intent.action = Intent.ACTION_GET_CONTENT
-//            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST+imageId)
-//        }
-//    }
-//
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == PICK_IMAGE_REQUEST) {
-//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                chooseImage()
-//            } else {
-//                Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
-//
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
-//            filePath = data.data
-//            try {
-//                val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, filePath)
-//                fileAfterBitMapp=bitmapToFile(bitmap,requireContext());
-//                //photoName=bitmapToString(bitmap)
-//                //updateUserInfo("c44bcd0e07717cf07ca3448482161307953e5e60",bitmap)
-//                rounded_image_view.setImageBitmap(bitmap)
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//            }
-//        }
-//    }
 
     private fun bitmapToFile(bitmap: Bitmap?, context: Context, imageId: Int): File? {
         bitmap ?: return null // If bitmap is null, return null
@@ -311,21 +312,6 @@ class ProfileFragment : Fragment() {
         return null
     }
 
-//    private fun bitmapToFile(bitmap: Bitmap?, context: Context): File {
-//        val file = File(context.cacheDir, "temp_image.png")
-//        file.createNewFile()
-//
-//        val outputStream = ByteArrayOutputStream()
-//        bitmap?.compress(Bitmap.CompressFormat.PNG, 80, outputStream)
-//        val byteArray = outputStream.toByteArray()
-//
-//        val fos = FileOutputStream(file)
-//        fos.write(byteArray)
-//        fos.flush()
-//        fos.close()
-//        return file
-//    }
-
 
 
     fun updateUserText(token: String,userData: UserData){
@@ -341,7 +327,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    fun updateUserInfo(token: String, photo:File,card:File) {
+    fun updateUserPoth(token: String, photo:File,card:File) {
 
         progressBar.visibility=View.VISIBLE
 
