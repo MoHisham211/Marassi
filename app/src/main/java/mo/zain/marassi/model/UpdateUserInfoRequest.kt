@@ -19,5 +19,5 @@ data class UpdateUserInfoRequest(
 data class UpdateUserInfoResponse(
     @SerializedName("message") val message: String,
     @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: UserData // Assuming UserData is the response data class
+    @SerializedName("data") val data: UpdateUserInfoRequest // Assuming UserData is the response data class
 )

@@ -6,26 +6,98 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragment.main.ProfileFragment">
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/custom_appbar" />
 
+    <ImageView
+        android:id="@+id/changeCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rotation="10"
+        android:src="@drawable/edit"
+        app:layout_constraintBottom_toBottomOf="@+id/cardId_Image"
+        app:layout_constraintEnd_toEndOf="@+id/cardId_Image" />
+
+    <ImageView
+        android:id="@+id/cardId_Image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="-1dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/id_card"
+        app:layout_constraintBottom_toBottomOf="@+id/rounded_image_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraint" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/custom_appbar_background"
+        android:elevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/left_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@android:color/holo_red_light" />
+
+        <!-- Title in the center -->
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:gravity="center"
+            android:text="My Profile"
+            android:textColor="@color/Coptan"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/right_icon"
+            app:layout_constraintStart_toEndOf="@+id/left_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Icon on the right side -->
+        <ImageView
+            android:id="@+id/right_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/aprove"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@android:color/holo_green_light" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/rounded_image_view"
         android:layout_width="@dimen/_120sdp"
         android:layout_height="@dimen/_120sdp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
+        android:scaleType="centerCrop"
         android:src="@color/Coptan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:scaleType="fitCenter"
+        app:layout_constraintTop_toBottomOf="@+id/constraint"
         app:riv_corner_radius="30dip"
         app:riv_mutate_background="true"
-        app:riv_tile_mode="repeat"
         app:riv_oval="true"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
+        app:riv_tile_mode="repeat" />
 
     <ImageView
         android:id="@+id/camera_icon"
@@ -39,11 +111,11 @@
         app:layout_constraintTop_toTopOf="@+id/rounded_image_view" />
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         android:background="@color/white"
-        android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rounded_image_view">
@@ -119,6 +191,16 @@
         android:src="@drawable/logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

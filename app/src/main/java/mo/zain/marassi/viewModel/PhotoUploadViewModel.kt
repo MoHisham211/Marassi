@@ -3,8 +3,8 @@ package mo.zain.marassi.viewModel
 import androidx.lifecycle.ViewModel
 import mo.zain.marassi.di.RetrofitClient
 import mo.zain.marassi.model.UploadResponse
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import retrofit2.Call
