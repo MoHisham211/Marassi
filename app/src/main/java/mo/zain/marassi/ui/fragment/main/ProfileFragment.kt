@@ -24,13 +24,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.makeramen.roundedimageview.RoundedImageView
 import mo.zain.marassi.R
 import mo.zain.marassi.helper.SharedPreferencesHelper
 import mo.zain.marassi.ui.AuthenticationActivity
 import mo.zain.marassi.viewModel.LogOutViewModel
-import mo.zain.marassi.viewModel.UpdateProfileViewModel
+import mo.zain.marassi.viewModel.ProfileViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -44,18 +45,27 @@ class ProfileFragment : Fragment() {
 
     lateinit var floatingActionLogout: FloatingActionButton
     var saveToken: SharedPreferences? = null
+
     private lateinit var viewModel: LogOutViewModel
+
     lateinit var fullName: EditText
     lateinit var userEmail: EditText
     lateinit var phoneNum: EditText
+
     lateinit var btnEdit: Button
     lateinit var camera_icon: ImageView
     lateinit var rounded_image_view: RoundedImageView
+
+
+
+
     private val PICK_IMAGE_REQUEST = 1
     var ProfilePhotoAfterBitMapp:File ?=null
     var CardIdPhotoAfterBitMapp:File ?=null
-    private lateinit var updateProfileViewModel: UpdateProfileViewModel
+    private lateinit var profileViewModel: ProfileViewModel
     private lateinit var iconImageView:ImageView
+    private lateinit var left_icon:ImageView
+
     lateinit var progressBar:ProgressBar
     lateinit var cardId_Image:ImageView
     lateinit var changeCard:ImageView
@@ -84,6 +94,9 @@ class ProfileFragment : Fragment() {
         progressBar=view.findViewById(R.id.progressBar)
         changeCard=view.findViewById(R.id.changeCard)
         cardId_Image=view.findViewById(R.id.cardId_Image)
+        left_icon=view.findViewById(R.id.left_icon)
+
+        getProfile(token!!)
 
         val userData: UserData? = SharedPreferencesHelper.getUserData(requireContext())
 
@@ -102,14 +115,8 @@ class ProfileFragment : Fragment() {
 
         btnEdit.setOnClickListener {
 
-            Toast.makeText(requireContext(), "${token!!}", Toast.LENGTH_SHORT).show()
-            if(ProfilePhotoAfterBitMapp!=null && CardIdPhotoAfterBitMapp!=null){
-            updateUserPoth(token!!,ProfilePhotoAfterBitMapp!!,CardIdPhotoAfterBitMapp!!)
-            }else if(ProfilePhotoAfterBitMapp!=null&&CardIdPhotoAfterBitMapp==null){
-                updateProfileImage(token!!,ProfilePhotoAfterBitMapp!!)
-            }else if (ProfilePhotoAfterBitMapp==null&&CardIdPhotoAfterBitMapp!=null){
-                updateProfileCard(token!!,CardIdPhotoAfterBitMapp!!)
-            }
+            left_icon.visibility=View.VISIBLE
+            iconImageView.visibility=View.VISIBLE
 
         }
 
@@ -117,11 +124,27 @@ class ProfileFragment : Fragment() {
             chooseImage(1)
         }
 
+        left_icon.setOnClickListener{
+
+            left_icon.visibility=View.GONE
+            iconImageView.visibility=View.GONE
+        }
         iconImageView.setOnClickListener {
+
             updateUserText(token!!,UserData(userData!!.username
                 ,"",userEmail.text.toString()
                 ,phoneNum.text.toString(),"",
                 fullName.text.toString()))
+
+            //Toast.makeText(requireContext(), "${token!!}", Toast.LENGTH_SHORT).show()
+            if(ProfilePhotoAfterBitMapp!=null && CardIdPhotoAfterBitMapp!=null){
+                updateUserPoth(token!!,ProfilePhotoAfterBitMapp!!,CardIdPhotoAfterBitMapp!!)
+            }else if(ProfilePhotoAfterBitMapp!=null&&CardIdPhotoAfterBitMapp==null){
+                updateProfileImage(token!!,ProfilePhotoAfterBitMapp!!)
+            }else if (ProfilePhotoAfterBitMapp==null&&CardIdPhotoAfterBitMapp!=null){
+                updateProfileCard(token!!,CardIdPhotoAfterBitMapp!!)
+            }
+
         }
 
 
@@ -132,23 +155,65 @@ class ProfileFragment : Fragment() {
         return view
     }
 
+    @SuppressLint("ResourceType")
+    private fun getProfile(token: String) {
+        progressBar.visibility=View.VISIBLE
+
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+        profileViewModel.getProfile(token
+            ) { isSuccess, registrationResponse, message ->
+            if (isSuccess) {
+                // Registration successful, handle accordingly
+
+                Glide
+                    .with(requireActivity())
+                    .load(registrationResponse!!.data.photo)
+                    .centerCrop()
+//                    .placeholder(R.raw.empty)
+                    .into(rounded_image_view);
+
+                Glide
+                    .with(requireActivity())
+                    .load(registrationResponse!!.data.IDCard)
+                    .centerCrop()
+//                    .placeholder(R.drawable.logo)
+                    .into(cardId_Image);
+
+//                SharedPreferencesHelper.saveUserData(requireContext(), UserData(registrationResponse!!.data.username
+//                    ,"",registrationResponse!!.data.email,registrationResponse!!.data.phone,token!!,registrationResponse.data.fullname))
+
+                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+                left_icon.visibility=View.GONE
+                iconImageView.visibility=View.GONE
+            } else {
+                Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+            }
+        }
+
+    }
+
     private fun updateProfileCard(token: String, card: File) {
 
         progressBar.visibility=View.VISIBLE
 
-        updateProfileViewModel = ViewModelProvider(this).get(UpdateProfileViewModel::class.java)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
 
         val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
         val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
 
 
-        updateProfileViewModel.updateProfileCard(token
+        profileViewModel.updateProfileCard(token
             ,IDCard) { isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
                 Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
+                left_icon.visibility=View.GONE
+                iconImageView.visibility=View.GONE
             } else {
                 Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
@@ -160,17 +225,19 @@ class ProfileFragment : Fragment() {
 
         progressBar.visibility=View.VISIBLE
 
-        updateProfileViewModel = ViewModelProvider(this).get(UpdateProfileViewModel::class.java)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         val requestFile = photo.asRequestBody("image/png".toMediaTypeOrNull())
         val photoPart = MultipartBody.Part.createFormData("photo", photo.name, requestFile)
 
-        updateProfileViewModel.updateProfileImage(token
+        profileViewModel.updateProfileImage(token
             ,photoPart) { isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
                 Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
+                left_icon.visibility=View.GONE
+                iconImageView.visibility=View.GONE
             } else {
                 Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
@@ -315,8 +382,8 @@ class ProfileFragment : Fragment() {
 
 
     fun updateUserText(token: String,userData: UserData){
-        updateProfileViewModel = ViewModelProvider(this).get(UpdateProfileViewModel::class.java)
-        updateProfileViewModel.updateProfileInfo(token,userData){ isSuccess, registrationResponse, message ->
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        profileViewModel.updateProfileInfo(token,userData){ isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
                 Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
@@ -331,7 +398,7 @@ class ProfileFragment : Fragment() {
 
         progressBar.visibility=View.VISIBLE
 
-        updateProfileViewModel = ViewModelProvider(this).get(UpdateProfileViewModel::class.java)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         val requestFile = photo.asRequestBody("image/png".toMediaTypeOrNull())
         val photoPart = MultipartBody.Part.createFormData("photo", photo.name, requestFile)
@@ -340,12 +407,14 @@ class ProfileFragment : Fragment() {
         val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
 
 
-        updateProfileViewModel.updateProfileUser(token
+        profileViewModel.updateProfileUser(token
             ,photoPart,IDCard) { isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
                 Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
+                left_icon.visibility=View.GONE
+                iconImageView.visibility=View.GONE
             } else {
                 Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
@@ -428,6 +497,7 @@ class ProfileFragment : Fragment() {
             }
         })*/
     }
+
 
 
 }

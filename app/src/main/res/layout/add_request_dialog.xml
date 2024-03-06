@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,6 +8,17 @@
     android:layout_gravity="center"
     android:layout_margin="@dimen/_10sdp"
     android:background="@drawable/background_dialog">
+
+    <ImageView
+        android:id="@+id/requestImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/id_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageAddURL" />
+
     <ImageView
         android:id="@+id/imageAddURL"
         android:layout_width="@dimen/_25sdp"
@@ -26,38 +38,89 @@
         android:layout_marginEnd="@dimen/_8sdp"
         android:fontFamily="@font/montserrat_semi_bold"
         android:includeFontPadding="false"
-        android:text="Forget Password"
+        android:text="New Request"
         android:textColor="@color/white"
         android:textSize="@dimen/_14sdp"
         app:layout_constraintBottom_toBottomOf="@id/imageAddURL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageAddURL"
         app:layout_constraintTop_toTopOf="@id/imageAddURL"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutDays"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:hint="Number Of Days"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
         android:paddingBottom="@dimen/_8sdp"
-        android:hint="Enter Your Email"
-        app:boxStrokeColor="@color/white"
-        app:hintTextColor="@color/white"
-        app:errorEnabled="true"
+
         android:textColorHint="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/imageAddURL">
+        app:boxStrokeColor="@color/white"
+        app:errorEnabled="true"
+        app:hintTextColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/requestImage"
+        tools:layout_editor_absoluteX="10dp">
+
         <com.google.android.material.textfield.TextInputEditText
-            android:importantForAutofill="no"
-            android:inputType="textEmailAddress"
-            android:textSize="@dimen/_13sdp"
-            android:textColor="@color/white"
-            android:imeOptions="actionDone"
-            android:fontFamily="@font/montserrat_regular"
-            android:id="@+id/editTextEmail"
+            android:id="@+id/editTextDays"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_regular"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_13sdp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp"
+        android:popupBackground="@color/white"
+        tools:listitem="@layout/spinner_item"
+        android:textSize="@dimen/_13sdp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutDetails" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutDetails"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter The Reason"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@color/white"
+        app:errorEnabled="true"
+        app:hintTextColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/layoutDays"
+        tools:layout_editor_absoluteX="0dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_regular"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_13sdp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -73,7 +136,8 @@
         android:textColor="@color/secondColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutDays" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
     <TextView
         android:id="@+id/buttonCancel"
         android:layout_width="wrap_content"
@@ -87,6 +151,5 @@
         android:textColor="@color/secondColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/buttonSubmit"
-        app:layout_constraintTop_toBottomOf="@id/layoutDays"
-        android:layout_marginRight="@dimen/_8sdp" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
 </androidx.constraintlayout.widget.ConstraintLayout>

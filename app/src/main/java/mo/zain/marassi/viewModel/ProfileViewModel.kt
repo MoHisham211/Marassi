@@ -3,16 +3,15 @@ package mo.zain.marassi.viewModel
 import UserData
 import androidx.lifecycle.ViewModel
 import mo.zain.marassi.di.RetrofitClient
+import mo.zain.marassi.model.ProfileResponse
 import mo.zain.marassi.model.UpdateUserInfoResponse
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.http.Part
-import retrofit2.http.Query
 
 
-class UpdateProfileViewModel :ViewModel(){
+class ProfileViewModel :ViewModel(){
 
     fun updateProfileUser(
         token: String,
@@ -138,6 +137,28 @@ class UpdateProfileViewModel :ViewModel(){
             }
 
             override fun onFailure(call: Call<UpdateUserInfoResponse>, t: Throwable) {
+                onResult(false, null, "Error: ${t.message}")
+            }
+        })
+    }
+
+    fun getProfile(token: String,onResult: (Boolean, ProfileResponse?, String) -> Unit){
+        RetrofitClient.apiService.getProfile("Token "+token).enqueue(object :
+            Callback<ProfileResponse> {
+            override fun onResponse(call: Call<ProfileResponse>, response: Response<ProfileResponse>) {
+                if (response.isSuccessful) {
+                    val updateUserInfo = response.body()
+                    if (updateUserInfo != null && updateUserInfo.success) {
+                        onResult(true, updateUserInfo, "Update successful")
+                    } else {
+                        onResult(false, null, "Update failed")
+                    }
+                } else {
+                    onResult(false, null, "Error: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
                 onResult(false, null, "Error: ${t.message}")
             }
         })
