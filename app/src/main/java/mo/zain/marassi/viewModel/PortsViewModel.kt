@@ -2,17 +2,16 @@ package mo.zain.marassi.viewModel
 
 import androidx.lifecycle.ViewModel
 import mo.zain.marassi.di.RetrofitClient
-import mo.zain.marassi.model.AllSeaportsResponse
-import mo.zain.marassi.model.ProfileResponse
+import mo.zain.marassi.model.SeaPortItems
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class PortsViewModel :ViewModel() {
-    fun getAllPorts(token: String,onResult: (Boolean, AllSeaportsResponse?, String) -> Unit){
+    fun getAllPorts(token: String,onResult: (Boolean, SeaPortItems?, String) -> Unit){
         RetrofitClient.apiService.getAllPorts("Token "+token).enqueue(object :
-            Callback<AllSeaportsResponse> {
-            override fun onResponse(call: Call<AllSeaportsResponse>, response: Response<AllSeaportsResponse>) {
+            Callback<SeaPortItems> {
+            override fun onResponse(call: Call<SeaPortItems>, response: Response<SeaPortItems>) {
                 if (response.isSuccessful) {
                     val updateUserInfo = response.body()
                     if (updateUserInfo != null && updateUserInfo.success) {
@@ -25,7 +24,7 @@ class PortsViewModel :ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<AllSeaportsResponse>, t: Throwable) {
+            override fun onFailure(call: Call<SeaPortItems>, t: Throwable) {
                 onResult(false, null, "Error: ${t.message}")
             }
         })

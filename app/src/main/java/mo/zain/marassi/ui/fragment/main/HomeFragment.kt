@@ -1,7 +1,6 @@
 package mo.zain.marassi.ui.fragment.main
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 
@@ -9,27 +8,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ProgressBar
 import android.widget.Toast
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import mo.zain.marassi.R
 import mo.zain.marassi.adapter.HomeAdapter
-import mo.zain.marassi.model.SeaPortItems
+import mo.zain.marassi.model.DataX
 import mo.zain.marassi.viewModel.PortsViewModel
-import java.io.File
 
 
 class HomeFragment : Fragment() {
     lateinit var RV:RecyclerView
     var saveToken: SharedPreferences? = null
     private lateinit var viewModel: PortsViewModel
-    private var AllPorts: ArrayList<SeaPortItems> = ArrayList()
+    private var AllPorts: ArrayList<DataX> = ArrayList()
     private var homeAdapter:HomeAdapter ?=null
 
 

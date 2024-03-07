@@ -27,7 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import mo.zain.marassi.R
-import mo.zain.marassi.model.SeaPortItems
+import mo.zain.marassi.model.DataX
 import mo.zain.marassi.viewModel.PortsViewModel
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -50,7 +50,7 @@ class RequestsFragment : Fragment() {
     private var request_file: File?=null
     var saveToken: SharedPreferences? = null
     private lateinit var viewModel: PortsViewModel
-    private var AllPorts: ArrayList<SeaPortItems> = ArrayList()
+    private var AllPorts: ArrayList<DataX> = ArrayList()
     private var portId:Int ? =null
     private lateinit var RequestprogressBar:ProgressBar
 

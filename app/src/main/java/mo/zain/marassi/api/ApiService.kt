@@ -1,11 +1,10 @@
-import com.google.gson.annotations.SerializedName
-import mo.zain.marassi.model.AllSeaportsResponse
 import mo.zain.marassi.model.ForgetPasswordRequest
 import mo.zain.marassi.model.ForgetPasswordResponse
 import mo.zain.marassi.model.LogOutData
 import mo.zain.marassi.model.LoginData
 import mo.zain.marassi.model.LoginResponse
 import mo.zain.marassi.model.ProfileResponse
+import mo.zain.marassi.model.SeaPortItems
 import mo.zain.marassi.model.UpdateUserInfoResponse
 import mo.zain.marassi.model.UploadResponse
 import okhttp3.MultipartBody
@@ -17,7 +16,6 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
-import retrofit2.http.Query
 
 interface ApiService {
     @POST("register/")
@@ -89,7 +87,7 @@ interface ApiService {
 
     @GET("all_seaports/")
     fun getAllPorts(@Header("Authorization")token:String)
-            :Call<AllSeaportsResponse>
+            :Call<SeaPortItems>
 
 
 }

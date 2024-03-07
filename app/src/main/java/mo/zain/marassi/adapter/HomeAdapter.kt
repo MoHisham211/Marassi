@@ -1,25 +1,26 @@
 package mo.zain.marassi.adapter
 
-import android.content.Context
+import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.Nullable
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import mo.zain.marassi.R
-import mo.zain.marassi.model.SeaPortItems
-import android.graphics.drawable.Drawable
 import com.bumptech.glide.request.target.Target
+import mo.zain.marassi.R
+import mo.zain.marassi.model.DataX
 
 
-class HomeAdapter(val list: ArrayList<SeaPortItems>): RecyclerView.Adapter<HomeAdapter.ViewModel>() {
+
+class HomeAdapter(val list: ArrayList<DataX>): RecyclerView.Adapter<HomeAdapter.ViewModel>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewModel {
@@ -32,9 +33,9 @@ class HomeAdapter(val list: ArrayList<SeaPortItems>): RecyclerView.Adapter<HomeA
 
     override fun onBindViewHolder(holder: ViewModel, position: Int) {
 
-        val jump = AnimationUtils.loadAnimation(holder.itemView.context, mo.zain.marassi.R.anim.jump_and_fade);
+        val jump = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.jump_and_fade);
 
-        val portItems:SeaPortItems=list.get(position)
+        val portItems: DataX =list.get(position)
 
         holder.progress_product_iv.startAnimation(jump)
 
@@ -68,6 +69,32 @@ class HomeAdapter(val list: ArrayList<SeaPortItems>): RecyclerView.Adapter<HomeA
         holder.tv_id.text=portItems.id.toString();
         holder.tv_name.text=portItems.name
         holder.tv_description.text=portItems.description
+
+
+//        val bundle = Bundle()
+//        bundle.putSerializable("amount", portItems)
+//
+//        holder.itemView.setOnClickListener {
+//            //holder.itemView.context
+//              holder.itemView.findNavController().navigate(R.id.action_homeFragment_to_allInfoFragment,bundle)
+//            //Toast.makeText(holder.itemView.context, ""+portItems.name, Toast.LENGTH_SHORT).show()
+//        }
+
+
+        //val portItemss: DataX =  portItems// Initialize your data here
+
+        // Create a bundle and put data into it
+        val bundle = Bundle()
+        bundle.putSerializable("amount",portItems)
+
+        // Navigate to AllInfoFragment with the bundle
+        holder.itemView.setOnClickListener {
+            val navController = holder.itemView.findNavController()
+            navController?.let {
+                it.navigate(R.id.action_homeFragment_to_allInfoFragment, bundle)
+            }
+        }
+
 
 
 
