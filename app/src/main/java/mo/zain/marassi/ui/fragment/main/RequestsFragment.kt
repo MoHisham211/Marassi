@@ -60,6 +60,7 @@ class RequestsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view= inflater.inflate(R.layout.fragment_requests, container, false)
+
         addRequest=view.findViewById(R.id.addRequest)
         RequestprogressBar=view.findViewById(R.id.RequestprogressBar)
         saveToken = requireActivity().getSharedPreferences("Token", Context.MODE_PRIVATE)

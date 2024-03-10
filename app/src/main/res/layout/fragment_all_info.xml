@@ -5,14 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".ui.fragment.main.AllInfoFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:fitsSystemWindows="true">
+        android:layout_height="@dimen/_150sdp">
 
 <!--        style="@style/Widget.MaterialComponents.Toolbar.Primary"-->
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -20,23 +18,90 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="@color/secondColor"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            app:toolbarId="@+id/toolbar"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <!--?attr/actionBarSize -->
+            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed"-->
             <ImageView
                 android:id="@+id/portImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitXY"
+                android:scaleType="fitCenter"
                 android:src="@drawable/logo"/>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include
-        android:id="@+id/included_layout"
-        layout="@layout/content_scrolling" />
+<!--    <include-->
+<!--        android:id="@+id/included_layout"-->
+<!--        layout="@layout/content_scrolling" />-->
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.fragment.main.AllInfoFragment"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_8sdp"
+                tools:text="large text" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_weight="1"
+                    android:background="#C1C1C1" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Links"
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/secondColor"
+                    android:fontFamily="@font/montserrat_semi_bold"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginRight="@dimen/_8sdp"
+                    android:layout_weight="1"
+                    android:background="#C1C1C1" />
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvAll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_8sdp" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

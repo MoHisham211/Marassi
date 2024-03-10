@@ -37,6 +37,7 @@ class AllInfoFragment : Fragment() {
     lateinit var rvLinks:RecyclerView
     private var linksList:List<Link> = ArrayList()
     private lateinit var adapter:LinksAdapter
+    lateinit var textView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,10 +48,10 @@ class AllInfoFragment : Fragment() {
 
         fab=view.findViewById(R.id.fab)
         //val parentLayout: NestedScrollView = view.findViewById(R.id.nested)
-        val includedLayout: View = view.findViewById(R.id.included_layout)
-        val textView: TextView = includedLayout.findViewById(R.id.description)
-        rvLinks=includedLayout.findViewById(R.id.rvAll)
+        textView= view.findViewById(R.id.description)
+        rvLinks=view.findViewById(R.id.rvAll)
         rvLinks.layoutManager=LinearLayoutManager(requireContext())
+
         portImage=view.findViewById(R.id.portImage)
 
         val receivedBundle = arguments

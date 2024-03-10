@@ -1,5 +1,6 @@
 import mo.zain.marassi.model.ForgetPasswordRequest
 import mo.zain.marassi.model.ForgetPasswordResponse
+import mo.zain.marassi.model.GetAllRequests
 import mo.zain.marassi.model.LogOutData
 import mo.zain.marassi.model.LoginData
 import mo.zain.marassi.model.LoginResponse
@@ -88,6 +89,11 @@ interface ApiService {
     @GET("all_seaports/")
     fun getAllPorts(@Header("Authorization")token:String)
             :Call<SeaPortItems>
+
+
+    @GET("user-port-requests/")
+    fun getAllRequests(@Header("Authorization")token:String)
+            :Call<GetAllRequests>
 
 
 }

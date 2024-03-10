@@ -2,6 +2,7 @@ package mo.zain.marassi.viewModel
 
 import androidx.lifecycle.ViewModel
 import mo.zain.marassi.di.RetrofitClient
+import mo.zain.marassi.model.GetAllRequests
 import mo.zain.marassi.model.SeaPortItems
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,5 +30,29 @@ class PortsViewModel :ViewModel() {
             }
         })
     }
+
+
+    fun getAllRequests(token: String,onResult: (Boolean, GetAllRequests?, String) -> Unit){
+        RetrofitClient.apiService.getAllRequests("Token "+token).enqueue(object :
+            Callback<GetAllRequests> {
+            override fun onResponse(call: Call<GetAllRequests>, response: Response<GetAllRequests>) {
+                if (response.isSuccessful) {
+                    val updateUserInfo = response.body()
+                    if (updateUserInfo != null && updateUserInfo.success) {
+                        onResult(true, updateUserInfo, "Update successful")
+                    } else {
+                        onResult(false, null, "Update failed")
+                    }
+                } else {
+                    onResult(false, null, "Error: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<GetAllRequests>, t: Throwable) {
+                onResult(false, null, "Error: ${t.message}")
+            }
+        })
+    }
+
 
 }
