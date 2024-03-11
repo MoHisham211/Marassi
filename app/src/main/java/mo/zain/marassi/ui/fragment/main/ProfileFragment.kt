@@ -221,6 +221,102 @@ class ProfileFragment : Fragment() {
         }
     }
 
+
+    private fun updateProfilePassport(token: String, card: File) {
+
+        progressBar.visibility=View.VISIBLE
+
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+
+        val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
+        val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
+
+
+        profileViewModel.updateProfileCard(token
+            ,IDCard) { isSuccess, registrationResponse, message ->
+            if (isSuccess) {
+                // Registration successful, handle accordingly
+                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+                left_icon.visibility=View.GONE
+                iconImageView.visibility=View.GONE
+            } else {
+                Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+            }
+        }
+    }
+
+
+
+
+
+
+    private fun updateProfileMaritimePassport(token: String, card: File) {
+
+        progressBar.visibility=View.VISIBLE
+
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+
+        val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
+        val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
+
+
+        profileViewModel.updateProfileCard(token
+            ,IDCard) { isSuccess, registrationResponse, message ->
+            if (isSuccess) {
+                // Registration successful, handle accordingly
+                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+                left_icon.visibility=View.GONE
+                iconImageView.visibility=View.GONE
+            } else {
+                Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+            }
+        }
+    }
+
+
+
+
+    private fun updateProfileOthers(token: String, card: File) {
+
+        progressBar.visibility=View.VISIBLE
+
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+
+        val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
+        val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
+
+
+        profileViewModel.updateProfileCard(token
+            ,IDCard) { isSuccess, registrationResponse, message ->
+            if (isSuccess) {
+                // Registration successful, handle accordingly
+                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+                left_icon.visibility=View.GONE
+                iconImageView.visibility=View.GONE
+            } else {
+                Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
     private fun updateProfileImage(token: String, photo: File) {
 
         progressBar.visibility=View.VISIBLE

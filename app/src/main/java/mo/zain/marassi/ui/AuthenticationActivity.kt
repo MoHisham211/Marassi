@@ -19,8 +19,8 @@ import mo.zain.marassi.R
 class AuthenticationActivity : AppCompatActivity() {
 
     var myShared: SharedPreferences?=null
-    private lateinit var biometricPrompt: BiometricPrompt
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
+    //private lateinit var biometricPrompt: BiometricPrompt
+    //private lateinit var promptInfo: BiometricPrompt.PromptInfo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
@@ -30,7 +30,7 @@ class AuthenticationActivity : AppCompatActivity() {
 
 
 
-        val biometricManager = BiometricManager.from(this)
+        /*val biometricManager = BiometricManager.from(this)
         when (biometricManager.canAuthenticate()) {
             BiometricManager.BIOMETRIC_SUCCESS ->
                 displayMessage("Biometric authentication is available")
@@ -68,7 +68,7 @@ class AuthenticationActivity : AppCompatActivity() {
 
 
 
-        biometricPrompt.authenticate(promptInfo)
+        biometricPrompt.authenticate(promptInfo)*/
 
 
     if (!myShared?.getString("Token","").isNullOrEmpty())
@@ -88,9 +88,9 @@ class AuthenticationActivity : AppCompatActivity() {
         setupActionBarWithNavController(findNavController(R.id.fragmentContainerView))
 
     }
-    private fun displayMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
+//    private fun displayMessage(message: String) {
+//        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+//    }
     override fun onSupportNavigateUp(): Boolean {
         var navigate = findNavController(R.id.fragmentContainerView)
         return navigate.navigateUp() || super.onSupportNavigateUp()

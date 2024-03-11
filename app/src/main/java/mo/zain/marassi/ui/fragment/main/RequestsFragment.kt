@@ -24,10 +24,15 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import mo.zain.marassi.R
+import mo.zain.marassi.adapter.RequestsAdapter
 import mo.zain.marassi.model.DataX
+import mo.zain.marassi.model.DataXX
 import mo.zain.marassi.viewModel.PortsViewModel
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -53,6 +58,10 @@ class RequestsFragment : Fragment() {
     private var AllPorts: ArrayList<DataX> = ArrayList()
     private var portId:Int ? =null
     private lateinit var RequestprogressBar:ProgressBar
+    private var allRequests:ArrayList<DataXX> = ArrayList()
+    lateinit var requestsAdapter:RequestsAdapter
+    lateinit var rvGetData:RecyclerView
+    lateinit var animation_view: LottieAnimationView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,12 +72,18 @@ class RequestsFragment : Fragment() {
 
         addRequest=view.findViewById(R.id.addRequest)
         RequestprogressBar=view.findViewById(R.id.RequestprogressBar)
+        rvGetData=view.findViewById(R.id.rvGetData)
+        rvGetData.layoutManager= LinearLayoutManager(requireContext())
+        animation_view=view.findViewById(R.id.animation_view)
+
         saveToken = requireActivity().getSharedPreferences("Token", Context.MODE_PRIVATE)
         val token = saveToken!!.getString("Token", "")
         addRequest.setOnClickListener {
 
             showRequestDialog(token!!)
         }
+
+        getAllRequestes(token!!)
 
         return view
     }
@@ -246,6 +261,31 @@ class RequestsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun getAllRequestes(token: String){
+
+        RequestprogressBar.visibility=View.VISIBLE
+
+        viewModel = ViewModelProvider(this).get(PortsViewModel::class.java)
+
+        viewModel.getAllRequests(token) { isSuccess, seaports, message ->
+            if (isSuccess) {
+                // Populate spinner adapter with names
+                seaports?.let {
+                    allRequests.addAll(it.data)
+                    requestsAdapter= RequestsAdapter(allRequests)
+                    rvGetData.adapter=requestsAdapter
+                    animation_view.visibility=View.GONE
+                    RequestprogressBar.visibility=View.GONE
+                }
+            } else {
+                Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_SHORT).show()
+                RequestprogressBar.visibility=View.GONE
+            }
+        }
+
+
     }
 
 
