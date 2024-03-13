@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,7 +34,11 @@ import mo.zain.marassi.R
 import mo.zain.marassi.adapter.RequestsAdapter
 import mo.zain.marassi.model.DataX
 import mo.zain.marassi.model.DataXX
+import mo.zain.marassi.model.paymob.OrderRequest
+import mo.zain.marassi.model.paymob.PaymentRequest
+import mo.zain.marassi.model.paymob.TokenRequest
 import mo.zain.marassi.viewModel.PortsViewModel
+import mo.zain.marassi.viewModel.TokenViewModel
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -46,8 +51,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 
 class RequestsFragment : Fragment() {
-
-
 
     lateinit var addRequest:FloatingActionButton
     var dialog:AlertDialog ?=null
@@ -62,6 +65,8 @@ class RequestsFragment : Fragment() {
     lateinit var requestsAdapter:RequestsAdapter
     lateinit var rvGetData:RecyclerView
     lateinit var animation_view: LottieAnimationView
+    private lateinit var viewModelPaymob: TokenViewModel
+    private val apiKey="ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2T1RZME9UVTNMQ0p1WVcxbElqb2lhVzVwZEdsaGJDSjkuZ2pyUU1CZ2JwTFFlZ1ZKcWEtX0xUb1drUnBMSS02U0VQcDVFZ1c1OWQtMTdjaElfdnNNbGZMSlZiVDFqdjRfRWoyTE9pX1AteGJnTThYbUlBZHQ5bEE="
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -121,6 +126,7 @@ class RequestsFragment : Fragment() {
         }
         dialogView.findViewById<TextView>(R.id.buttonCancel).setOnClickListener {
             // Handle cancel button click
+            payNow()
             dialog!!.dismiss()
         }
 
@@ -132,7 +138,71 @@ class RequestsFragment : Fragment() {
         getSeaPort(token, adapter)
     }
 
+    private fun payNow() {
+        viewModelPaymob = ViewModelProvider(this).get(TokenViewModel::class.java)
 
+
+        viewModelPaymob.postToken(TokenRequest(apiKey)) { isSuccess, tokenResponse, message ->
+                if (isSuccess) {
+                    // Registration successful, handle accordingly
+                    Toast.makeText(requireContext(), "Sussess "+tokenResponse, Toast.LENGTH_SHORT).show()
+
+                    val token =tokenResponse!!.token
+
+                    makeOrder(token)
+                    Log.d("PayMob","Output"+tokenResponse)
+
+                } else {
+
+                    Toast.makeText(requireContext(), "Error "+tokenResponse, Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun makeOrder(token: String) {
+
+        viewModelPaymob.postOrder(token,
+            OrderRequest("5000",token,
+                "EGP","false")) { isSuccess, tokenResponse, message ->
+            if (isSuccess) {
+                // Registration successful, handle accordingly
+                Toast.makeText(requireContext(), "Sussess "+tokenResponse, Toast.LENGTH_SHORT).show()
+
+                val order_id=tokenResponse!!.id
+                paymentKey(token,order_id)
+//                makeOrder(token)
+                Log.d("PayMob","Output "+tokenResponse)
+
+            } else {
+
+                Toast.makeText(requireContext(), "Error "+tokenResponse, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    }
+
+    private fun paymentKey(token: String, orderId: Int) {
+
+        viewModelPaymob.payment(token,
+            PaymentRequest("5000",token,"")
+        ) { isSuccess, tokenResponse, message ->
+            if (isSuccess) {
+                // Registration successful, handle accordingly
+                Toast.makeText(requireContext(), "Sussess "+tokenResponse, Toast.LENGTH_SHORT).show()
+
+                //val order_id=tokenResponse!!.id
+                paymentKey(token,order_id)
+//                makeOrder(token)
+                Log.d("PayMob","Output "+tokenResponse)
+
+            } else {
+
+                Toast.makeText(requireContext(), "Error "+tokenResponse, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+    }
 
 //    fun showRequestDialog(token: String) {
 //        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.add_request_dialog, null)
