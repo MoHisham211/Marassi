@@ -34,6 +34,7 @@ import mo.zain.marassi.R
 import mo.zain.marassi.adapter.RequestsAdapter
 import mo.zain.marassi.model.DataX
 import mo.zain.marassi.model.DataXX
+import mo.zain.marassi.model.paymob.BillingData
 import mo.zain.marassi.model.paymob.OrderRequest
 import mo.zain.marassi.model.paymob.PaymentRequest
 import mo.zain.marassi.model.paymob.TokenRequest
@@ -149,8 +150,9 @@ class RequestsFragment : Fragment() {
 
                     val token =tokenResponse!!.token
 
-                    makeOrder(token)
+
                     Log.d("PayMob","Output"+tokenResponse)
+                    makeOrder(token)
 
                 } else {
 
@@ -162,7 +164,7 @@ class RequestsFragment : Fragment() {
     private fun makeOrder(token: String) {
 
         viewModelPaymob.postOrder(token,
-            OrderRequest("5000",token,
+            OrderRequest("100000",token,
                 "EGP","false")) { isSuccess, tokenResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
@@ -183,69 +185,29 @@ class RequestsFragment : Fragment() {
 
     private fun paymentKey(token: String, orderId: Int) {
 
+        Log.d("PayMob","data"+"\n${token}\n${orderId}")
         viewModelPaymob.payment(token,
-            PaymentRequest("5000",token,"")
+            PaymentRequest("100000",token, BillingData("803","200","Jaskolskiburgh","CR","mohamedhisham714@gmail.com","Mohamed","50","Hisham",
+                "01013205633","5015","PKG","true","805"),"EGP",3600,"4538953",orderId.toString())
         ) { isSuccess, tokenResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
                 Toast.makeText(requireContext(), "Sussess "+tokenResponse, Toast.LENGTH_SHORT).show()
 
                 //val order_id=tokenResponse!!.id
-                paymentKey(token,order_id)
+                //paymentKey(token,order_id)
 //                makeOrder(token)
                 Log.d("PayMob","Output "+tokenResponse)
 
             } else {
 
+                Log.d("PayMob","Output "+tokenResponse)
                 Toast.makeText(requireContext(), "Error "+tokenResponse, Toast.LENGTH_SHORT).show()
             }
         }
 
 
     }
-
-//    fun showRequestDialog(token: String) {
-//        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.add_request_dialog, null)
-//
-//        dialog = AlertDialog.Builder(requireContext())
-//            .setView(dialogView)
-//            .setCancelable(true)
-//            .create()
-//
-//
-//        val adapter = ArrayAdapter<SeaPortItems>(requireContext(), R.layout.spinner_item)
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//
-//
-//        val spinner = dialogView.findViewById<Spinner>(R.id.spinner)
-//        spinner.adapter = adapter
-//        // Set OnItemSelectedListener for the spinner
-//        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                val selectedItem = parent?.getItemAtPosition(position) as SeaPortItems
-//                Toast.makeText(requireContext(), "Selected item: ${selectedItem.name}", Toast.LENGTH_SHORT).show()
-//            }
-//
-//            override fun onNothingSelected(parent: AdapterView<*>?) {
-//                // Handle when nothing is selected
-//            }
-//        }
-//        dialogView.findViewById<TextView>(R.id.buttonSubmit).setOnClickListener {
-//            newRequest(token)
-//            dialog!!.dismiss()
-//        }
-//        dialogView.findViewById<TextView>(R.id.buttonCancel).setOnClickListener {
-//            dialog!!.dismiss()
-//        }
-//
-//        dialogView.findViewById<ImageView>(R.id.requestImage).setOnClickListener {
-//            chooseImage()
-//        }
-//        dialog!!.show()
-//
-//        getSeaPort(token, adapter)
-//
-//    }
 
     // Function to choose an image
     private fun chooseImage() {
@@ -359,22 +321,6 @@ class RequestsFragment : Fragment() {
     }
 
 
-
-//    private fun getSeaPort(token: String,adapter: ArrayAdapter<SeaPortItems>) {
-//        viewModel = ViewModelProvider(this).get(PortsViewModel::class.java)
-//
-//        viewModel.getAllPorts(token) { isSuccess, seaports, message ->
-//            if (isSuccess) {
-//                // Populate spinner adapter with data
-//                seaports?.let {
-//                    adapter.clear()
-//                    adapter.addAll(it.data)
-//                }
-//            } else {
-//                Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
 
 
     fun newRequest(token: String) {
