@@ -7,26 +7,6 @@
     tools:context=".ui.fragment.main.ProfileFragment">
 
 
-    <ImageView
-        android:id="@+id/changeCard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:rotation="10"
-        android:src="@drawable/edit"
-        app:layout_constraintBottom_toBottomOf="@+id/cardId_Image"
-        app:layout_constraintEnd_toEndOf="@+id/cardId_Image" />
-
-    <ImageView
-        android:id="@+id/cardId_Image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="-1dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/id_card"
-        app:layout_constraintBottom_toBottomOf="@+id/rounded_image_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraint" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint"
@@ -88,8 +68,8 @@
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/rounded_image_view"
-        android:layout_width="@dimen/_120sdp"
-        android:layout_height="@dimen/_120sdp"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
         android:layout_marginTop="15dp"
         android:scaleType="centerCrop"
         android:src="@color/Coptan"
@@ -103,8 +83,8 @@
 
     <ImageView
         android:id="@+id/camera_icon"
-        android:layout_width="@dimen/_24sdp"
-        android:layout_height="@dimen/_24sdp"
+        android:layout_width="@dimen/_22sdp"
+        android:layout_height="@dimen/_22sdp"
         android:rotation="10"
         android:src="@drawable/edit"
         app:layout_constraintBottom_toBottomOf="@+id/rounded_image_view"
@@ -112,15 +92,20 @@
         app:layout_constraintStart_toEndOf="@+id/rounded_image_view"
         app:layout_constraintTop_toTopOf="@+id/rounded_image_view" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rounded_image_view">
+
+
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:background="@color/white"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rounded_image_view">
+        android:orientation="vertical">
 
         <EditText
 
@@ -171,6 +156,63 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rounded_image_view" />
 
+        <TextView
+            android:id="@+id/IDCard"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/edit_text_style"
+            android:elevation="@dimen/_4sdp"
+            android:hint="IDCard"
+            android:textSize="@dimen/_13sdp"
+            android:gravity="center_vertical"
+            android:drawableRight="@drawable/edit"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rounded_image_view" />
+
+        <TextView
+            android:id="@+id/Passport"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/edit_text_style"
+            android:elevation="@dimen/_4sdp"
+            android:hint="Passport"
+            android:textSize="@dimen/_13sdp"
+            android:gravity="center_vertical"
+            android:drawableRight="@drawable/edit"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rounded_image_view" />
+
+        <TextView
+            android:id="@+id/Others"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/edit_text_style"
+            android:elevation="@dimen/_4sdp"
+            android:textSize="@dimen/_13sdp"
+            android:gravity="center_vertical"
+            android:hint="Others Files"
+            android:drawableRight="@drawable/edit"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rounded_image_view" />
+
 
         <Button
             android:id="@+id/editBtn"
@@ -182,6 +224,7 @@
             android:text="Edit Profile" />
 
     </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionLogout"
@@ -203,27 +246,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.21" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

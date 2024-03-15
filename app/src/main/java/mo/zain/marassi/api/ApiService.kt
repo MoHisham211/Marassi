@@ -67,6 +67,22 @@ interface ApiService {
     ): Call<UpdateUserInfoResponse>
 
 
+    @Multipart
+    @PUT("update_user_info/")
+    fun updatePassport(
+        @Header("Authorization") token: String,
+        @Part Passport: MultipartBody.Part?,
+    ): Call<UpdateUserInfoResponse>
+
+
+    @Multipart
+    @PUT("update_user_info/")
+    fun updateOthers(
+        @Header("Authorization") token: String,
+        @Part Others: MultipartBody.Part?,
+    ): Call<UpdateUserInfoResponse>
+
+
 
 
     //Information

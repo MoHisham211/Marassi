@@ -24,7 +24,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
@@ -82,6 +84,7 @@ class RequestsFragment : Fragment() {
         rvGetData.layoutManager= LinearLayoutManager(requireContext())
         animation_view=view.findViewById(R.id.animation_view)
 
+        allRequests.clear()
         saveToken = requireActivity().getSharedPreferences("Token", Context.MODE_PRIVATE)
         val token = saveToken!!.getString("Token", "")
         addRequest.setOnClickListener {
@@ -93,6 +96,9 @@ class RequestsFragment : Fragment() {
 
         return view
     }
+    /*
+    https://datamanager686.pythonanywhere.com/api/echo_get_data/
+     */
 
     fun showRequestDialog(token: String) {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.add_request_dialog, null)
@@ -172,7 +178,6 @@ class RequestsFragment : Fragment() {
 
                 val order_id=tokenResponse!!.id
                 paymentKey(token,order_id)
-//                makeOrder(token)
                 Log.d("PayMob","Output "+tokenResponse)
 
             } else {
@@ -188,15 +193,13 @@ class RequestsFragment : Fragment() {
         Log.d("PayMob","data"+"\n${token}\n${orderId}")
         viewModelPaymob.payment(token,
             PaymentRequest("100000",token, BillingData("803","200","Jaskolskiburgh","CR","mohamedhisham714@gmail.com","Mohamed","50","Hisham",
-                "01013205633","5015","PKG","true","805"),"EGP",3600,"4538953",orderId.toString())
+                "01013205633","5015","PKG","true","805"),"EGP",3600,"4536488",orderId.toString())
         ) { isSuccess, tokenResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
                 Toast.makeText(requireContext(), "Sussess "+tokenResponse, Toast.LENGTH_SHORT).show()
 
-                //val order_id=tokenResponse!!.id
-                //paymentKey(token,order_id)
-//                makeOrder(token)
+                sendToWeb(tokenResponse!!.token)
                 Log.d("PayMob","Output "+tokenResponse)
 
             } else {
@@ -207,6 +210,16 @@ class RequestsFragment : Fragment() {
         }
 
 
+    }
+    private fun sendToWeb(token: String) {
+        val url = "https://accept.paymob.com/api/acceptance/iframes/831173?payment_token=${token}"
+        val webViewFragment = WebViewFragment.newInstance(url)
+        // Pass the fragment instance to the navigate function
+        findNavController().navigate(
+            R.id.action_requestsFragment_to_webViewFragment,
+            // Pass the URL as argument to the WebViewFragment
+            bundleOf("url" to url)
+        )
     }
 
     // Function to choose an image

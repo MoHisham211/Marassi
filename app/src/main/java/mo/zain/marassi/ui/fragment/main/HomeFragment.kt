@@ -38,6 +38,7 @@ class HomeFragment : Fragment() {
         saveToken = requireActivity().getSharedPreferences("Token", Context.MODE_PRIVATE)
         val token = saveToken!!.getString("Token", "")
 
+        AllPorts.clear()
         getSeaPort(token!!)
 
         RV=view.findViewById(R.id.RV)

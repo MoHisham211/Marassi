@@ -28,7 +28,11 @@
         android:id="@+id/requestsFragment"
         android:name="mo.zain.marassi.ui.fragment.main.RequestsFragment"
         android:label="fragment_requests"
-        tools:layout="@layout/fragment_requests" />
+        tools:layout="@layout/fragment_requests" >
+        <action
+            android:id="@+id/action_requestsFragment_to_webViewFragment"
+            app:destination="@id/webViewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/allInfoFragment"
         android:name="mo.zain.marassi.ui.fragment.main.AllInfoFragment"
@@ -37,5 +41,14 @@
         <action
             android:id="@+id/action_allInfoFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/webViewFragment"
+        android:name="mo.zain.marassi.ui.fragment.main.WebViewFragment"
+        android:label="fragment_web_view"
+        tools:layout="@layout/fragment_web_view" >
+        <action
+            android:id="@+id/action_webViewFragment_to_requestsFragment"
+            app:destination="@id/requestsFragment" />
     </fragment>
 </navigation>

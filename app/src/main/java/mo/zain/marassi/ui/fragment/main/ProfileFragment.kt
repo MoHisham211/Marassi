@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -19,6 +20,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -39,36 +41,34 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.random.Random
 
 
 class ProfileFragment : Fragment() {
 
     lateinit var floatingActionLogout: FloatingActionButton
     var saveToken: SharedPreferences? = null
-
     private lateinit var viewModel: LogOutViewModel
-
     lateinit var fullName: EditText
     lateinit var userEmail: EditText
     lateinit var phoneNum: EditText
+    lateinit var IDCard: TextView
+    lateinit var Passport: TextView
+    lateinit var Others: TextView
 
     lateinit var btnEdit: Button
     lateinit var camera_icon: ImageView
     lateinit var rounded_image_view: RoundedImageView
 
-
-
-
     private val PICK_IMAGE_REQUEST = 1
     var ProfilePhotoAfterBitMapp:File ?=null
     var CardIdPhotoAfterBitMapp:File ?=null
+    var PassportAfter:File ?=null
+    var OthersAfter:File ?=null
     private lateinit var profileViewModel: ProfileViewModel
     private lateinit var iconImageView:ImageView
     private lateinit var left_icon:ImageView
-
     lateinit var progressBar:ProgressBar
-    lateinit var cardId_Image:ImageView
-    lateinit var changeCard:ImageView
 
 
     @SuppressLint("MissingInflatedId")
@@ -92,9 +92,12 @@ class ProfileFragment : Fragment() {
         rounded_image_view = view.findViewById(R.id.rounded_image_view)
         iconImageView = view.findViewById<ImageView>(R.id.right_icon)
         progressBar=view.findViewById(R.id.progressBar)
-        changeCard=view.findViewById(R.id.changeCard)
-        cardId_Image=view.findViewById(R.id.cardId_Image)
         left_icon=view.findViewById(R.id.left_icon)
+        IDCard=view.findViewById(R.id.IDCard)
+        Passport=view.findViewById(R.id.Passport)
+        Others=view.findViewById(R.id.Others)
+
+
 
         getProfile(token!!)
 
@@ -137,19 +140,30 @@ class ProfileFragment : Fragment() {
                 fullName.text.toString()))
 
             //Toast.makeText(requireContext(), "${token!!}", Toast.LENGTH_SHORT).show()
-            if(ProfilePhotoAfterBitMapp!=null && CardIdPhotoAfterBitMapp!=null){
-                updateUserPoth(token!!,ProfilePhotoAfterBitMapp!!,CardIdPhotoAfterBitMapp!!)
-            }else if(ProfilePhotoAfterBitMapp!=null&&CardIdPhotoAfterBitMapp==null){
+            if(ProfilePhotoAfterBitMapp!=null){
                 updateProfileImage(token!!,ProfilePhotoAfterBitMapp!!)
-            }else if (ProfilePhotoAfterBitMapp==null&&CardIdPhotoAfterBitMapp!=null){
+            }
+            if (ProfilePhotoAfterBitMapp==null){
                 updateProfileCard(token!!,CardIdPhotoAfterBitMapp!!)
+            }
+            if (PassportAfter!=null){
+                updateProfilePassport(token!!,PassportAfter!!)
+            }
+            if (OthersAfter!=null){
+                updateProfileOthers(token!!,OthersAfter!!)
             }
 
         }
 
 
-        changeCard.setOnClickListener {
+        IDCard.setOnClickListener {
             chooseImage(2)
+        }
+        Passport.setOnClickListener {
+            chooseImage(3)
+        }
+        Others.setOnClickListener {
+            chooseImage(4)
         }
 
         return view
@@ -164,21 +178,13 @@ class ProfileFragment : Fragment() {
         profileViewModel.getProfile(token
             ) { isSuccess, registrationResponse, message ->
             if (isSuccess) {
-                // Registration successful, handle accordingly
 
                 Glide
                     .with(requireActivity())
                     .load(registrationResponse!!.data.photo)
-                    .centerCrop()
-//                    .placeholder(R.raw.empty)
                     .into(rounded_image_view);
 
-                Glide
-                    .with(requireActivity())
-                    .load(registrationResponse!!.data.IDCard)
-                    .centerCrop()
-//                    .placeholder(R.drawable.logo)
-                    .into(cardId_Image);
+
 
 //                SharedPreferencesHelper.saveUserData(requireContext(), UserData(registrationResponse!!.data.username
 //                    ,"",registrationResponse!!.data.email,registrationResponse!!.data.phone,token!!,registrationResponse.data.fullname))
@@ -202,7 +208,7 @@ class ProfileFragment : Fragment() {
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
 
-        val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
+        val requestFileCard = card.asRequestBody("multipart/form-data".toMediaTypeOrNull())
         val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
 
 
@@ -229,11 +235,11 @@ class ProfileFragment : Fragment() {
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
 
-        val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
-        val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
+        val requestFileCard = card.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val IDCard = MultipartBody.Part.createFormData("passport", card.name, requestFileCard)
 
 
-        profileViewModel.updateProfileCard(token
+        profileViewModel.updatePassport(token
             ,IDCard) { isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
@@ -247,39 +253,6 @@ class ProfileFragment : Fragment() {
             }
         }
     }
-
-
-
-
-
-
-    private fun updateProfileMaritimePassport(token: String, card: File) {
-
-        progressBar.visibility=View.VISIBLE
-
-        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-
-
-        val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
-        val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
-
-
-        profileViewModel.updateProfileCard(token
-            ,IDCard) { isSuccess, registrationResponse, message ->
-            if (isSuccess) {
-                // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
-                progressBar.visibility=View.GONE
-                left_icon.visibility=View.GONE
-                iconImageView.visibility=View.GONE
-            } else {
-                Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
-                progressBar.visibility=View.GONE
-            }
-        }
-    }
-
-
 
 
     private fun updateProfileOthers(token: String, card: File) {
@@ -289,11 +262,11 @@ class ProfileFragment : Fragment() {
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
 
-        val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
-        val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
+        val requestFileCard = card.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val IDCard = MultipartBody.Part.createFormData("Others", card.name, requestFileCard)
 
 
-        profileViewModel.updateProfileCard(token
+        profileViewModel.updateOthers(token
             ,IDCard) { isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
@@ -307,13 +280,6 @@ class ProfileFragment : Fragment() {
             }
         }
     }
-
-
-
-
-
-
-
 
 
 
@@ -363,6 +329,9 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /*
+
+     */
     private fun chooseImage(imageId: Int) {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -376,7 +345,7 @@ class ProfileFragment : Fragment() {
             )
         } else {
             val intent = Intent()
-            intent.type = "image/*"
+            intent.type = "*/*"
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST + imageId)
         }
@@ -407,15 +376,15 @@ class ProfileFragment : Fragment() {
                         ProfilePhotoAfterBitMapp = bitmapToFile(bitmap, requireContext(),imageId)
                         rounded_image_view.setImageBitmap(bitmap)
                         Log.d("ImageId",ProfilePhotoAfterBitMapp.toString())
-                        //updateUserInfo(saveToken!!.getString("Token", "")!!,ProfilePhotoAfterBitMapp!!,CardIdPhotoAfterBitMapp!!)
-                        // Do something with the file if needed
                     }
                     2 -> {
-                        CardIdPhotoAfterBitMapp = bitmapToFile(bitmap, requireContext(), imageId)
-                        cardId_Image.setImageBitmap(bitmap)
-                        Log.d("ImageId",CardIdPhotoAfterBitMapp.toString())
-                        //updateUserInfo(saveToken!!.getString("Token", "")!!,ProfilePhotoAfterBitMapp!!,CardIdPhotoAfterBitMapp!!)
-                        // Do something with the file if needed
+                        CardIdPhotoAfterBitMapp=getFileFromUri(filePath!!,requireContext(),imageId)
+                    }
+                    3-> {
+                        PassportAfter=getFileFromUri(filePath!!,requireContext(),imageId)
+                    }
+                    4->{
+                        OthersAfter=getFileFromUri(filePath!!,requireContext(),imageId)
                     }
                     else -> {
                         // Handle invalid imageId
@@ -428,32 +397,56 @@ class ProfileFragment : Fragment() {
     }
 
 
+
+    private fun getFileFromUri(uri: Uri, context: Context,imageId: Int): File? {
+        if (imageId==2){
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val file = File(context.cacheDir, "temp_file_idCard")
+            inputStream?.use { input ->
+                val outputStream = FileOutputStream(file)
+                outputStream.use { output ->
+                    input.copyTo(output)
+                }
+            }
+            return file
+        }
+        if (imageId==3){
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val file = File(context.cacheDir, "temp_file_passport")
+            inputStream?.use { input ->
+                val outputStream = FileOutputStream(file)
+                outputStream.use { output ->
+                    input.copyTo(output)
+                }
+            }
+            return file
+        }
+        if (imageId==4){
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val file = File(context.cacheDir, "temp_file_others")
+            inputStream?.use { input ->
+                val outputStream = FileOutputStream(file)
+                outputStream.use { output ->
+                    input.copyTo(output)
+                }
+            }
+            return file
+        }
+
+
+        return null
+    }
+    fun generateRandomNumberInRange(): Int {
+        return Random.nextInt(0, 9)
+    }
+
+
     private fun bitmapToFile(bitmap: Bitmap?, context: Context, imageId: Int): File? {
         bitmap ?: return null // If bitmap is null, return null
 
         if(imageId==1)
         {
-            val file = File(context.cacheDir, "temp_image.png")
-            try {
-                val outputStream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.PNG, 80, outputStream) // Adjusted quality to 80
-                val byteArray = outputStream.toByteArray()
-
-                val fos = FileOutputStream(file)
-                fos.use { output ->
-                    output.write(byteArray)
-                    output.flush()
-                }
-                return file
-
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-        }
-        else if (imageId==2)
-        {
-            val file = File(context.cacheDir, "temp_image2.png")
+            val file = File(context.cacheDir, "temp_image${generateRandomNumberInRange()}.png")
             try {
                 val outputStream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 80, outputStream) // Adjusted quality to 80
@@ -490,32 +483,32 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    fun updateUserPoth(token: String, photo:File,card:File) {
-
-        progressBar.visibility=View.VISIBLE
-
-        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-
-        val requestFile = photo.asRequestBody("image/png".toMediaTypeOrNull())
-        val photoPart = MultipartBody.Part.createFormData("photo", photo.name, requestFile)
-
-        val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
-        val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
-
-
-        profileViewModel.updateProfileUser(token
-            ,photoPart,IDCard) { isSuccess, registrationResponse, message ->
-            if (isSuccess) {
-                // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
-                progressBar.visibility=View.GONE
-                left_icon.visibility=View.GONE
-                iconImageView.visibility=View.GONE
-            } else {
-                Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
-                progressBar.visibility=View.GONE
-            }
-        }
+//    fun updateUserPoth(token: String, photo:File,card:File) {
+//
+//        progressBar.visibility=View.VISIBLE
+//
+//        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+//
+//        val requestFile = photo.asRequestBody("image/png".toMediaTypeOrNull())
+//        val photoPart = MultipartBody.Part.createFormData("photo", photo.name, requestFile)
+//
+//        val requestFileCard = card.asRequestBody("image/png".toMediaTypeOrNull())
+//        val IDCard = MultipartBody.Part.createFormData("IDCard", card.name, requestFileCard)
+//
+//
+//        profileViewModel.updateProfileUser(token
+//            ,photoPart,IDCard) { isSuccess, registrationResponse, message ->
+//            if (isSuccess) {
+//                // Registration successful, handle accordingly
+//                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+//                progressBar.visibility=View.GONE
+//                left_icon.visibility=View.GONE
+//                iconImageView.visibility=View.GONE
+//            } else {
+//                Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
+//                progressBar.visibility=View.GONE
+//            }
+//        }
 
 
        /* profileViewModel = ViewModelProvider(this).get(PhotoUploadViewModel::class.java)
@@ -592,8 +585,6 @@ class ProfileFragment : Fragment() {
                 //Toast.makeText(requireContext(), ""+responseBody, Toast.LENGTH_SHORT).show()
             }
         })*/
+
     }
 
-
-
-}
