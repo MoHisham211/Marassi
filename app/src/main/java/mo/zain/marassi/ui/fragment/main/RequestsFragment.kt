@@ -89,6 +89,7 @@ class RequestsFragment : Fragment() {
         animation_view=view.findViewById(R.id.animation_view)
 
         allRequests.clear()
+
         saveToken = requireActivity().getSharedPreferences("Token", Context.MODE_PRIVATE)
         val token = saveToken!!.getString("Token", "")
         addRequest.setOnClickListener {

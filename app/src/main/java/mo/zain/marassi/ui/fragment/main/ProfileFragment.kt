@@ -185,6 +185,10 @@ class ProfileFragment : Fragment() {
                     .into(rounded_image_view);
 
 
+                IDCard.text=registrationResponse.data.IDCard.toString();
+                Passport.text=registrationResponse.data.passport.toString();
+                Others.text=registrationResponse.data.Others.toString();
+
 
 //                SharedPreferencesHelper.saveUserData(requireContext(), UserData(registrationResponse!!.data.username
 //                    ,"",registrationResponse!!.data.email,registrationResponse!!.data.phone,token!!,registrationResponse.data.fullname))
