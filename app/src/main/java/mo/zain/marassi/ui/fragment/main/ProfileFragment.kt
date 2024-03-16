@@ -124,7 +124,7 @@ class ProfileFragment : Fragment() {
         }
 
         camera_icon.setOnClickListener {
-            chooseImage(1)
+            chooseImageProfile(1)
         }
 
         left_icon.setOnClickListener{
@@ -329,9 +329,26 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    /*
 
-     */
+    private fun chooseImageProfile(imageId: Int) {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                PICK_IMAGE_REQUEST
+            )
+        } else {
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST+imageId )
+        }
+    }
+
     private fun chooseImage(imageId: Int) {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -436,9 +453,6 @@ class ProfileFragment : Fragment() {
 
         return null
     }
-    fun generateRandomNumberInRange(): Int {
-        return Random.nextInt(0, 9)
-    }
 
 
     private fun bitmapToFile(bitmap: Bitmap?, context: Context, imageId: Int): File? {
@@ -446,7 +460,7 @@ class ProfileFragment : Fragment() {
 
         if(imageId==1)
         {
-            val file = File(context.cacheDir, "temp_image${generateRandomNumberInRange()}.png")
+            val file = File(context.cacheDir, "temp_image.png")
             try {
                 val outputStream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 80, outputStream) // Adjusted quality to 80

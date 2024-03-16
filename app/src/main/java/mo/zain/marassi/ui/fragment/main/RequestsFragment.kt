@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -32,10 +33,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.Gson
 import mo.zain.marassi.R
 import mo.zain.marassi.adapter.RequestsAdapter
 import mo.zain.marassi.model.DataX
 import mo.zain.marassi.model.DataXX
+import mo.zain.marassi.model.DataXXX
+import mo.zain.marassi.model.RequestResponse
 import mo.zain.marassi.model.paymob.BillingData
 import mo.zain.marassi.model.paymob.OrderRequest
 import mo.zain.marassi.model.paymob.PaymentRequest
@@ -133,7 +137,7 @@ class RequestsFragment : Fragment() {
         }
         dialogView.findViewById<TextView>(R.id.buttonCancel).setOnClickListener {
             // Handle cancel button click
-            payNow()
+
             dialog!!.dismiss()
         }
 
@@ -145,9 +149,8 @@ class RequestsFragment : Fragment() {
         getSeaPort(token, adapter)
     }
 
-    private fun payNow() {
+    private fun payNow(requestData: DataXXX) {
         viewModelPaymob = ViewModelProvider(this).get(TokenViewModel::class.java)
-
 
         viewModelPaymob.postToken(TokenRequest(apiKey)) { isSuccess, tokenResponse, message ->
                 if (isSuccess) {
@@ -156,9 +159,8 @@ class RequestsFragment : Fragment() {
 
                     val token =tokenResponse!!.token
 
-
                     Log.d("PayMob","Output"+tokenResponse)
-                    makeOrder(token)
+                    makeOrder(token,requestData)
 
                 } else {
 
@@ -167,7 +169,7 @@ class RequestsFragment : Fragment() {
             }
     }
 
-    private fun makeOrder(token: String) {
+    private fun makeOrder(token: String,requestData: DataXXX) {
 
         viewModelPaymob.postOrder(token,
             OrderRequest("100000",token,
@@ -177,7 +179,7 @@ class RequestsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Sussess "+tokenResponse, Toast.LENGTH_SHORT).show()
 
                 val order_id=tokenResponse!!.id
-                paymentKey(token,order_id)
+                paymentKey(token,order_id,requestData)
                 Log.d("PayMob","Output "+tokenResponse)
 
             } else {
@@ -188,12 +190,12 @@ class RequestsFragment : Fragment() {
 
     }
 
-    private fun paymentKey(token: String, orderId: Int) {
+    private fun paymentKey(token: String, orderId: Int,requestData: DataXXX) {
 
         Log.d("PayMob","data"+"\n${token}\n${orderId}")
         viewModelPaymob.payment(token,
-            PaymentRequest("100000",token, BillingData("803","200","Jaskolskiburgh","CR","mohamedhisham714@gmail.com","Mohamed","50","Hisham",
-                "01013205633","5015","PKG","true","805"),"EGP",3600,"4536488",orderId.toString())
+            PaymentRequest("100000",token, BillingData("803","200","Jaskolskiburgh",requestData.user_id.toString(),requestData.email,requestData.fullname,"50",requestData.user,
+                requestData.phone,"5015","PKG",requestData.request_id.toString(),"805"),"EGP",3600,"4536488",orderId.toString())
         ) { isSuccess, tokenResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
@@ -236,34 +238,24 @@ class RequestsFragment : Fragment() {
             )
         } else {
             val intent = Intent()
-            intent.type = "image/*"
+            intent.type = "*/*"
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST )
         }
     }
 
-    private fun bitmapToFile(bitmap: Bitmap?, context: Context, imageId: Int): File? {
-        bitmap ?: return null // If bitmap is null, return null
+    private fun getFileFromUri(uri: Uri, context: Context, imageId: Int): File? {
 
-            val file = File(context.cacheDir, "request.png")
-            try {
-                val outputStream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.PNG, 80, outputStream) // Adjusted quality to 80
-                val byteArray = outputStream.toByteArray()
-
-                val fos = FileOutputStream(file)
-                fos.use { output ->
-                    output.write(byteArray)
-                    output.flush()
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val file = File(context.cacheDir, "request_file")
+            inputStream?.use { input ->
+                val outputStream = FileOutputStream(file)
+                outputStream.use { output ->
+                    input.copyTo(output)
                 }
-                return file
-
-            } catch (e: IOException) {
-                e.printStackTrace()
             }
+            return file
 
-
-        return null
     }
 
 
@@ -273,16 +265,8 @@ class RequestsFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             val filePath = data.data
             try {
-                val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, filePath)
 
-                // Assuming imageView3 is the ID of your ImageView
-                val imageView = dialog?.findViewById<ImageView>(R.id.requestImage)
-
-                // Set the bitmap to the ImageView
-                imageView?.setImageBitmap(bitmap)
-
-                // Do something with the file if needed
-                request_file = bitmapToFile(bitmap, requireContext(), imageId)
+                request_file = getFileFromUri(filePath!!, requireContext(), imageId)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -329,15 +313,10 @@ class RequestsFragment : Fragment() {
                 RequestprogressBar.visibility=View.GONE
             }
         }
-
-
     }
 
-
-
-
     fun newRequest(token: String) {
-        RequestprogressBar.visibility=View.VISIBLE
+        RequestprogressBar.visibility = View.VISIBLE
         val url = "https://datamanager686.pythonanywhere.com/api/new-port-request/"
         val client = OkHttpClient()
         val requestBody = MultipartBody.Builder()
@@ -347,8 +326,8 @@ class RequestsFragment : Fragment() {
             .addFormDataPart("detail", dialog!!.findViewById<TextInputEditText>(R.id.editTextDetails).text.toString())
             .addFormDataPart(
                 "request_file",
-                "IDCard.png",
-                RequestBody.create("image/png".toMediaTypeOrNull(), request_file!!)
+                "request_file",
+                RequestBody.create("multipart/form-data".toMediaTypeOrNull(), request_file!!)
             )
             .build()
         val request = Request.Builder()
@@ -360,19 +339,74 @@ class RequestsFragment : Fragment() {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 requireActivity().runOnUiThread {
-                    RequestprogressBar.visibility=View.GONE
+                    RequestprogressBar.visibility = View.GONE
                     Toast.makeText(requireContext(), "An error occurred: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
                 //println("An error occurred: ${e.message}")
             }
+
             override fun onResponse(call: Call, response: Response) {
                 val responseBody = response.body?.string()
+                val gson = Gson()
+                val requestResponse: RequestResponse? = gson.fromJson(responseBody, RequestResponse::class.java)
                 requireActivity().runOnUiThread {
-                    RequestprogressBar.visibility=View.GONE
-                    Toast.makeText(requireContext(), "${responseBody}", Toast.LENGTH_SHORT).show()
+                    RequestprogressBar.visibility = View.GONE
+                    if (requestResponse?.success == true) {
+                        // Request was successful
+                        val requestData: DataXXX? = requestResponse.data
+                        Toast.makeText(requireContext(), "Request ID: ${requestData?.request_id}", Toast.LENGTH_SHORT).show()
+                        // Handle other fields as needed
+                        payNow(requestData!!)
+                    } else {
+                        // Request failed
+                        Toast.makeText(requireContext(), "Request failed: ${requestResponse?.message}", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 println(responseBody)
             }
         })
     }
+
+
+
+//    fun newRequest(token: String) {
+//        RequestprogressBar.visibility=View.VISIBLE
+//        val url = "https://datamanager686.pythonanywhere.com/api/new-port-request/"
+//        val client = OkHttpClient()
+//        val requestBody = MultipartBody.Builder()
+//            .setType(MultipartBody.FORM)
+//            .addFormDataPart("days", dialog!!.findViewById<TextInputEditText>(R.id.editTextDays).text.toString())
+//            .addFormDataPart("seaport", portId!!.toString())
+//            .addFormDataPart("detail", dialog!!.findViewById<TextInputEditText>(R.id.editTextDetails).text.toString())
+//            .addFormDataPart(
+//                "request_file",
+//                "request_file",
+//                RequestBody.create("multipart/form-data".toMediaTypeOrNull(), request_file!!)
+//            )
+//            .build()
+//        val request = Request.Builder()
+//            .url(url)
+//            .header("Authorization", "Token $token")
+//            .post(requestBody)
+//            .build()
+//        client.newCall(request).enqueue(object : Callback {
+//            override fun onFailure(call: Call, e: IOException) {
+//                e.printStackTrace()
+//                requireActivity().runOnUiThread {
+//                    RequestprogressBar.visibility=View.GONE
+//                    Toast.makeText(requireContext(), "An error occurred: ${e.message}", Toast.LENGTH_SHORT).show()
+//                }
+//                //println("An error occurred: ${e.message}")
+//            }
+//            override fun onResponse(call: Call, response: Response) {
+//                val responseBody = response.body?.string()
+//                requireActivity().runOnUiThread {
+//                    RequestprogressBar.visibility=View.GONE
+//                    Toast.makeText(requireContext(), "${responseBody}", Toast.LENGTH_SHORT).show()
+//                    payNow()
+//                }
+//                println(responseBody)
+//            }
+//        })
+//    }
 }
