@@ -26,11 +26,7 @@ import mo.zain.marassi.ui.MainActivity
 import mo.zain.marassi.viewModel.LoginViewModel
 
 class LoginFragment : Fragment() {
-    /**
-     * UserName
-     *Password
-     *
-     * */
+
     lateinit var toSignUp: TextView
     lateinit var toSignIn: Button
     lateinit var userEmail: TextInputEditText
@@ -96,7 +92,7 @@ class LoginFragment : Fragment() {
             if (isSuccess) {
                 progressBar2.visibility=View.GONE
                 // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Sussess "+registrationResponse, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Login Success", Toast.LENGTH_SHORT).show()
 
                 var editor: SharedPreferences.Editor=saveToken!!.edit()
                 editor.putString("Token",
@@ -152,7 +148,7 @@ class LoginFragment : Fragment() {
             if (isSuccess) {
                 progressBar2.visibility=View.GONE
                 // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Sussess "+registrationResponse!!.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), ""+registrationResponse!!.message, Toast.LENGTH_SHORT).show()
 
             } else {
                 progressBar2.visibility=View.GONE

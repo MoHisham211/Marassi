@@ -134,7 +134,7 @@ class RegistrationFragment : Fragment() {
                 if (isSuccess) {
                     progressBar.visibility=View.GONE
                     // Registration successful, handle accordingly
-                    Toast.makeText(requireContext(), "Sussess "+registrationResponse, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Create User Done", Toast.LENGTH_SHORT).show()
 
                     SharedPreferencesHelper.saveUserData(requireContext(), userData)
 
@@ -149,7 +149,7 @@ class RegistrationFragment : Fragment() {
 
                 } else {
                     progressBar.visibility=View.GONE
-                    Toast.makeText(requireContext(), "Error "+registrationResponse, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Error ", Toast.LENGTH_SHORT).show()
                 }
             }
         }

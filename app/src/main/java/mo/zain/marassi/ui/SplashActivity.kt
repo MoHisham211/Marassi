@@ -19,10 +19,13 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-
         imgSplash = findViewById(R.id.imageView)
         txtSplash = findViewById(R.id.textView2)
 
+        animationAndIntent()
+    }
+
+    private fun animationAndIntent() {
         // Load the animation
         val fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
 
@@ -38,4 +41,5 @@ class SplashActivity : AppCompatActivity() {
             finish() // Close the splash activity
         }, SPLASH_DELAY)
     }
+
 }

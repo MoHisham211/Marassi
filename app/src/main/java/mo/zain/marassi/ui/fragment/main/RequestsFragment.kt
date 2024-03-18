@@ -156,7 +156,7 @@ class RequestsFragment : Fragment() {
         viewModelPaymob.postToken(TokenRequest(apiKey)) { isSuccess, tokenResponse, message ->
                 if (isSuccess) {
                     // Registration successful, handle accordingly
-                    Toast.makeText(requireContext(), "Sussess "+tokenResponse, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Sussess ", Toast.LENGTH_SHORT).show()
 
                     val token =tokenResponse!!.token
 
@@ -177,7 +177,7 @@ class RequestsFragment : Fragment() {
                 "EGP","false")) { isSuccess, tokenResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Sussess "+tokenResponse, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Sussess ", Toast.LENGTH_SHORT).show()
 
                 val order_id=tokenResponse!!.id
                 paymentKey(token,order_id,requestData)
@@ -200,7 +200,7 @@ class RequestsFragment : Fragment() {
         ) { isSuccess, tokenResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Sussess "+tokenResponse, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Sussess ", Toast.LENGTH_SHORT).show()
 
                 sendToWeb(tokenResponse!!.token)
                 Log.d("PayMob","Output "+tokenResponse)

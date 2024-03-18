@@ -193,7 +193,7 @@ class ProfileFragment : Fragment() {
 //                SharedPreferencesHelper.saveUserData(requireContext(), UserData(registrationResponse!!.data.username
 //                    ,"",registrationResponse!!.data.email,registrationResponse!!.data.phone,token!!,registrationResponse.data.fullname))
 
-                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
                 left_icon.visibility=View.GONE
                 iconImageView.visibility=View.GONE
@@ -220,7 +220,7 @@ class ProfileFragment : Fragment() {
             ,IDCard) { isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Success ", Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
                 left_icon.visibility=View.GONE
                 iconImageView.visibility=View.GONE
@@ -247,7 +247,7 @@ class ProfileFragment : Fragment() {
             ,IDCard) { isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Success " , Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
                 left_icon.visibility=View.GONE
                 iconImageView.visibility=View.GONE
@@ -274,7 +274,7 @@ class ProfileFragment : Fragment() {
             ,IDCard) { isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Success " , Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
                 left_icon.visibility=View.GONE
                 iconImageView.visibility=View.GONE
@@ -300,7 +300,7 @@ class ProfileFragment : Fragment() {
             ,photoPart) { isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Success " , Toast.LENGTH_SHORT).show()
                 progressBar.visibility=View.GONE
                 left_icon.visibility=View.GONE
                 iconImageView.visibility=View.GONE
@@ -493,9 +493,9 @@ class ProfileFragment : Fragment() {
         profileViewModel.updateProfileInfo(token,userData){ isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
-                Toast.makeText(requireContext(), "Success " + registrationResponse, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Success " , Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Error " + registrationResponse, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error " , Toast.LENGTH_SHORT).show()
             }
 
         }
