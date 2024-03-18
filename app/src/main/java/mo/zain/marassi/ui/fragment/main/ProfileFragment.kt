@@ -501,6 +501,13 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    /*
+
+
+
+
+    testttt
+     */
 //    fun updateUserPoth(token: String, photo:File,card:File) {
 //
 //        progressBar.visibility=View.VISIBLE
