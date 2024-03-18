@@ -18,8 +18,8 @@ class WebViewFragment : Fragment() {
 
 
     private lateinit var webView: WebView
-    private var url: String? = null
     private val handler = Handler()
+    private var url: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,11 +55,12 @@ class WebViewFragment : Fragment() {
                     // Post a delayed action to navigate after 2 seconds
                     handler.postDelayed({
                         findNavController().navigate(R.id.action_webViewFragment_to_requestsFragment)
-                    }, 5000)
+                    }, 2000)
                 }
 
                 return true // Indicate that the WebView should handle the URL loading
             }
+
         }
     }
 
