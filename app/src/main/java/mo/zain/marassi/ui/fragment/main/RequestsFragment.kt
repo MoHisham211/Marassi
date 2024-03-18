@@ -268,6 +268,7 @@ class RequestsFragment : Fragment() {
             try {
 
                 request_file = getFileFromUri(filePath!!, requireContext(), imageId)
+                dialog!!.findViewById<ImageView>(R.id.requestImage).setImageResource(R.drawable.uploaded)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
