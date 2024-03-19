@@ -91,10 +91,6 @@ class RequestsAdapter(val listRequests:ArrayList<DataXX>): RecyclerView.Adapter<
             tv_id=itemView.findViewById(R.id.tv_id)
         }
 
-
-
-
-
     }
 
 }

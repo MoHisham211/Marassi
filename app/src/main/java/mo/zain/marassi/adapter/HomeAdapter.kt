@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.Target
 import mo.zain.marassi.R
 import mo.zain.marassi.model.DataX
 
+//S.A.E
 
 
 class HomeAdapter(val list: ArrayList<DataX>): RecyclerView.Adapter<HomeAdapter.ViewModel>() {

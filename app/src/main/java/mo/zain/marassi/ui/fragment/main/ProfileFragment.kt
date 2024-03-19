@@ -156,14 +156,40 @@ class ProfileFragment : Fragment() {
         }
 
 
-        IDCard.setOnClickListener {
+        IDCard.setOnLongClickListener {
+            // Show a toast message when the TextView is long-pressed
             chooseImage(2)
+            true // return true to consume the long click event
+        }
+        Passport.setOnLongClickListener {
+            // Show a toast message when the TextView is long-pressed
+            chooseImage(3)
+            true // return true to consume the long click event
+        }
+        Others.setOnLongClickListener {
+            // Show a toast message when the TextView is long-pressed
+            chooseImage(4)
+            true // return true to consume the long click event
+        }
+
+
+        IDCard.setOnClickListener {
+            //chooseImage(2)
+            val url = IDCard.text.toString()
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
         }
         Passport.setOnClickListener {
-            chooseImage(3)
+           // chooseImage(3)
+            val url = Passport.text.toString()
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
         }
         Others.setOnClickListener {
-            chooseImage(4)
+            //chooseImage(4)
+            val url = Others.text.toString()
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
         }
 
         return view
