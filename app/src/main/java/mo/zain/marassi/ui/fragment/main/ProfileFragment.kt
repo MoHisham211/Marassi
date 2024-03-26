@@ -134,16 +134,19 @@ class ProfileFragment : Fragment() {
         }
         iconImageView.setOnClickListener {
 
-            updateUserText(token!!,UserData(userData!!.username
-                ,"",userEmail.text.toString()
-                ,phoneNum.text.toString(),"",
-                fullName.text.toString()))
+        updateUserText(token!!, UserData(
+                        userData!!.username,
+                        "",
+                        userEmail.text.toString(),
+                        phoneNum.text.toString(),
+                        "",
+                        fullName.text.toString()))
 
             //Toast.makeText(requireContext(), "${token!!}", Toast.LENGTH_SHORT).show()
             if(ProfilePhotoAfterBitMapp!=null){
                 updateProfileImage(token!!,ProfilePhotoAfterBitMapp!!)
             }
-            if (ProfilePhotoAfterBitMapp==null){
+            if (ProfilePhotoAfterBitMapp!=null){
                 updateProfileCard(token!!,CardIdPhotoAfterBitMapp!!)
             }
             if (PassportAfter!=null){
@@ -211,9 +214,30 @@ class ProfileFragment : Fragment() {
                     .into(rounded_image_view);
 
 
-                IDCard.text=registrationResponse.data.IDCard.toString();
-                Passport.text=registrationResponse.data.passport.toString();
-                Others.text=registrationResponse.data.Others.toString();
+                if(registrationResponse.data.IDCard!=null)
+                {
+                    IDCard.text=registrationResponse.data.IDCard.toString();
+                }
+                if(registrationResponse.data.passport!=null)
+                {
+                    Passport.text=registrationResponse.data.passport.toString();
+                }
+                if(registrationResponse.data.Others!=null)
+                {
+                    Others.text=registrationResponse.data.Others.toString();
+                }
+
+                fullName.setText(registrationResponse.data.fullname)
+                userEmail.setText(registrationResponse.data.email)
+                phoneNum.setText(registrationResponse.data.phone)
+
+                // Clearing existing SharedPreferences data
+                val editor = saveToken?.edit()
+                editor?.remove("userData") // Removing the userData data
+                editor?.apply()
+                val userData = UserData(registrationResponse.data.username, "", userEmail.text.toString(),
+                    phoneNum.text.toString() ,"",fullName.text.toString())
+                SharedPreferencesHelper.saveUserData(requireContext(), userData)
 
 
 //                SharedPreferencesHelper.saveUserData(requireContext(), UserData(registrationResponse!!.data.username
@@ -515,13 +539,16 @@ class ProfileFragment : Fragment() {
 
 
     fun updateUserText(token: String,userData: UserData){
+        progressBar.visibility=View.VISIBLE
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         profileViewModel.updateProfileInfo(token,userData){ isSuccess, registrationResponse, message ->
             if (isSuccess) {
                 // Registration successful, handle accordingly
                 Toast.makeText(requireContext(), "Success " , Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
             } else {
                 Toast.makeText(requireContext(), "Error " , Toast.LENGTH_SHORT).show()
+                progressBar.visibility=View.GONE
             }
 
         }
