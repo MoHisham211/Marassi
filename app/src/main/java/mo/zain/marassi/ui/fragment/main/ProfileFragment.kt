@@ -175,24 +175,61 @@ class ProfileFragment : Fragment() {
             true // return true to consume the long click event
         }
 
+        //Important --?<-!->-!!-<-!->-!!-<-!->-??-<-!->
 
         IDCard.setOnClickListener {
             //chooseImage(2)
-            val url = IDCard.text.toString()
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
+            try{
+                val url = IDCard.text.toString()
+                if (!url.equals(null))
+                {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    startActivity(intent)
+                }else {
+                    Toast.makeText(context, "Press Long Click to edit the IDCard..", Toast.LENGTH_SHORT).show()
+
+                }
+
+            }catch (e:Exception){
+                Toast.makeText(context, ""+e.message.toString(), Toast.LENGTH_SHORT).show()
+            }
+
         }
         Passport.setOnClickListener {
            // chooseImage(3)
-            val url = Passport.text.toString()
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
+            try{
+                val url = Passport.text.toString()
+                if (!url.equals(null)) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    startActivity(intent)
+                }else{
+                    Toast.makeText(context, "Press Long Click to edit the Passport..", Toast.LENGTH_SHORT).show()
+
+                }
+
+            }catch (e:Exception){
+                Toast.makeText(context, ""+e.message.toString(), Toast.LENGTH_SHORT).show()
+
+            }
+
         }
         Others.setOnClickListener {
             //chooseImage(4)
-            val url = Others.text.toString()
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
+            try{
+                val url = Others.text.toString()
+                if (!url.equals(null)) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    startActivity(intent)
+                }else{
+                    Toast.makeText(context, "Press Long Click to edit the Other Files..", Toast.LENGTH_SHORT).show()
+
+                }
+
+            }catch (e:Exception){
+                Toast.makeText(context, ""+e.message.toString(), Toast.LENGTH_SHORT).show()
+
+            }
+
         }
 
         return view
